@@ -16,7 +16,14 @@ const donorRoutes = require('./routes/donors');
 const requestRoutes = require('./routes/requests');
 
 const app = express();
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'https://bloodlink-frontend-six.vercel.app',  // ← PUT YOUR ACTUAL VERCEL URL HERE
+    /\.vercel\.app$/                         // ← this covers ALL vercel.app subdomains
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
