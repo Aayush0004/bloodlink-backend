@@ -35,11 +35,15 @@ router.get('/sent', authMiddleware, async (req, res) => {
   try {
     const snap = await db.collection('requests')
       .where('senderId', '==', req.user.id)
-      .orderBy('createdAt', 'desc')
       .get();
-    res.json(snap.docs.map(d => d.data()));
+    // Sort in JavaScript instead of Firestore
+    const sorted = snap.docs
+      .map(d => d.data())
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.json(sorted);
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    console.error('sent error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -48,11 +52,15 @@ router.get('/received', authMiddleware, async (req, res) => {
   try {
     const snap = await db.collection('requests')
       .where('donorId', '==', req.user.id)
-      .orderBy('createdAt', 'desc')
       .get();
-    res.json(snap.docs.map(d => d.data()));
+    // Sort in JavaScript instead of Firestore
+    const sorted = snap.docs
+      .map(d => d.data())
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.json(sorted);
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    console.error('received error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
